@@ -1,0 +1,13 @@
+---
+- name: add username & password for FTS admin
+  hosts: test
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: add username & password
+      nxos_config:
+       lines:
+          - username {{ item }} password {{ item }}123! role network-admin
+          - copy running-config startup-config  
+      with_items: "{{ lookup('file', '/etc/ansible/shell/test.txt').splitlines() }}"

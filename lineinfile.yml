@@ -1,0 +1,26 @@
+---
+- name: Default setting for ubuntu new VMs 
+  hosts: Ubuntu
+  gather_facts: false
+  connection: ssh
+
+  tasks:
+    - name: Create file
+      file:
+        path: /tmp/test.txt
+        state: touch
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Config file
+      blockinfile:
+             path: /tmp/test.txt
+             block: |
+               Acquire::http::Pipeline-Depth 0;
+               Acquire::http::No-Cache true;
+               Acquire::BrokenProxy    true;
+    - name: delete line
+      lineinfile:
+             path: /tmp/test.txt
+             regexp: '^#'
+             state: absent

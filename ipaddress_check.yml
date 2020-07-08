@@ -1,0 +1,12 @@
+---
+- name: check IP
+  hosts: GW
+  gather_facts: true
+  connection: network_cli
+
+  tasks:
+   - name: Test reachability to 10.124.113.0
+     net_ping:
+      dest: 10.124.113.{{ item }}
+      count: 2
+     with_sequence: start=1 end=254 stride=1

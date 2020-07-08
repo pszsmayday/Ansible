@@ -1,0 +1,12 @@
+---
+- name: change default password
+  hosts: RTPALL
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: change password 
+      nxos_config:
+       lines: 
+          - username yuanwan password 1m@reTime role network-admin
+          - copy running-config startup-config

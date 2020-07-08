@@ -1,0 +1,12 @@
+- name: check IP
+  hosts: localhost
+  gather_facts: true
+  connection: local
+
+  
+  tasks:
+   - name: Test reachability to 10.74.88.0
+     shell:
+       ping 10.74.88.{{ item }} -c 3
+     with_sequence: start=1 end=254 stride=1
+

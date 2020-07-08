@@ -1,0 +1,11 @@
+---
+- name: copy file to nxos
+  hosts: SHNCLVSGWs
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+   - name: copy from server to device
+     nxos_command:
+       commands:
+        - "copy tftp://10.124.113.69/test1.txt bootflash:\n"

@@ -1,0 +1,22 @@
+---
+- name: creat vlans
+  hosts: B16
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: creat
+      ios_vlan:
+       vlan_id: "{{ item }}"
+       state: present
+      with_items:
+          - 229 
+          - 316
+          - 402
+          - 232
+         
+
+    - name: copy to startup-config
+      ios_config:
+       lines:
+         - do wr

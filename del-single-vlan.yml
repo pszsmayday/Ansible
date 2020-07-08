@@ -1,0 +1,14 @@
+---
+- name: delete vlans
+  hosts: all
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: del vlans
+      nxos_config:
+       lines:
+         - no vlan 300
+       save_when: always
+
+

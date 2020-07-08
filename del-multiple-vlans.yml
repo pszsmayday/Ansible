@@ -1,0 +1,17 @@
+---
+- name: config VLAN and SVI
+  hosts: GW SW
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: creat
+      nxos_config:
+       lines: 
+          - no vlan {{ item }}
+      with_sequence: start=300 end=302 stride=1
+
+    - name: copy to startup-config
+      nxos_config:
+       lines:
+         - copy running-config startup-config

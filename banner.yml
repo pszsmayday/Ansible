@@ -1,0 +1,17 @@
+---
+- name: creat vlans
+  hosts: all
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+  - name: configure the motd banner
+    nxos_banner:
+     banner: motd
+     text: "{{ lookup('file', '/etc/ansible/banner.cfg') }}"
+     state: present
+
+  - name: copy to startup-config
+    nxos_config:
+      lines:
+        - copy running-config startup-config 

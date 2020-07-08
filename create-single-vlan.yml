@@ -1,0 +1,17 @@
+---
+- name: creat vlans
+  hosts: GW SW
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: create vlans
+      nxos_config:
+       lines:
+         - name 10.124.101.0/24
+       parents: vlan 201
+    
+    - name: copy to startup-config
+      nxos_config:
+       lines:
+         - copy running-config startup-config

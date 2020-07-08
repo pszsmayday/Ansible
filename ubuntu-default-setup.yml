@@ -1,0 +1,53 @@
+---
+- name: Default setting for ubuntu new VMs 
+  hosts: Ubuntu
+  gather_facts: false
+  connection: ssh
+
+  tasks:
+    - name: Copy vmware-tools to remote servers
+      copy:
+        src: /software/VMwareTools-10.3.21-14772444.tar.gz
+        dest: /tmp/VMwareTools-10.3.21-14772444.tar.gz
+    - name: Unarchive VMwareTools
+      unarchive:
+        src: /tmp/VMwareTools-10.3.21-14772444.tar.gz
+        dest: /tmp
+        remote_src: yes
+    - name: Create file for aptbadproxy
+      file:
+        path: /etc/apt/apt.conf.d/99fixbadproxy
+        state: touch
+        owner: root
+        group: root
+        mode: '0644'
+    - name: Config file for apt badproxy
+      blockinfile:
+             path: /etc/apt/apt.conf.d/99fixbadproxy
+             block: |
+               Acquire::http::Pipeline-Depth 0;
+               Acquire::http::No-Cache true;
+               Acquire::BrokenProxy    true;
+    - name: delete line in /etc/apt/apt.conf.d/99fixbadproxy
+      lineinfile:
+             path: /etc/apt/apt.conf.d/99fixbadproxy
+             regexp: '^#'
+             state: absent
+    - name: install apt pkg
+      apt:
+        name: "{{ item }}"
+      with_items:
+        - net-tools
+        - gparted
+    - name: Install vmware-tools
+      shell: /tmp/vmware-tools-distrib/vmware-install.pl -d -f
+    - name: Config reslov.conf
+      lineinfile:
+             path: /etc/resolv.conf
+             regexp: "{{ item.regexp }}"
+             line:  "{{ item.line }}"
+      with_items:
+             - { regexp: '^nameserver' , line: 'nameserver 64.104.123.144'}
+             - { regexp: '^nameserver\n' , line: 'search cisco.com'}
+
+

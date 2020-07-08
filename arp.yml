@@ -1,0 +1,16 @@
+---
+- name: show arp
+  hosts: GW
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+   - name: show ip arp
+     nxos_command:
+      commands:
+       - show ip arp | in 10.124.113.{{ item }}
+     register: print
+     with_sequence: start=1 end=3 stride=1
+   - debug: 
+       var: "{{ item }}"
+     with_items: print.results

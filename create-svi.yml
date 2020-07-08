@@ -1,0 +1,37 @@
+---
+- name: config VLAN and SVI
+  hosts: 10.124.113.2
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+    - name: creat vlan and define the name
+      nxos_vlan:
+       aggregate:
+         - { vlan_id: " {{ item.vlanid }}", name: "192.168.{{ item.ip }}.0/24" }
+      with_items:
+         - { vlanid: '300',ip: '30' }
+         - { vlanid: '301',ip: '40' }
+         - { vlanid: '302',ip: '50' }
+
+    - name: creat SVI
+      nxos_config:
+       lines:
+         - interface vlan {{ item }}
+       after: exit
+      with_sequence: start=300 end=302 stride=1
+
+    - name: config SVI
+      nxos_l3_interface:
+       aggregate:
+         - { name: "vlan{{ item.vlanid }}", ipv4: "192.168.{{ item.ip }}.1/24" }
+      with_items:
+         - { vlanid: '300',ip: '30' }
+         - { vlanid: '301',ip: '40' }
+         - { vlanid: '302',ip: '50' }
+
+    - name: copy to startup-config
+      nxos_config:
+       lines:
+         - copy running-config startup-config
+

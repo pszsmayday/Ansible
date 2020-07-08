@@ -1,0 +1,12 @@
+---
+- name: check ip address
+  hosts: 10.124.113.2
+  gather_facts: false
+  connection: network_cli
+
+  vars:
+    sean_subnet: "10.124.113.0/24"
+  tasks:
+    - template:
+        src: /etc/ansible/shell/template.j2
+        dest: /etc/ansible/shell/rendered

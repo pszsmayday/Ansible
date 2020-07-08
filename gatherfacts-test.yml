@@ -1,0 +1,22 @@
+---
+- name: Check NXOS facts
+  hosts: GW SW
+  gather_facts: true
+  connection: network_cli
+
+  tasks:
+   - name: Gather facts
+     nxos_facts:
+       gather_subset: all
+   - name: Display the hostname,OS ver and S/N
+     debug:
+       msg: "The hostname is {{ ansible_net_hostname }} ,the OS ver is {{ ansible_net_version }} and the S/N is {{ansible_net_license_hostid}}"
+   - name: Display IP address     
+     debug:   
+       var: ansible_net_all_ipv4_addresses
+   - name: Display vlan list
+     debug:
+       var: vlan_list
+   - name: CDP neighbors
+     debug:
+       var: ansible_net_neighbors

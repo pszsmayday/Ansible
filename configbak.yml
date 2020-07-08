@@ -1,0 +1,25 @@
+---
+- name: config backup
+  hosts: SHNCLVSGWs SHNCLVSSWs
+  gather_facts: false
+  connection: network_cli
+
+  tasks:
+   - name: Gather facts
+     nxos_facts:
+      gather_subset: all
+   - name: backup configuration
+     nxos_command:
+      commands:
+        - show run
+     register: print
+   - name: Print running-config
+     debug:
+      var: print.stdout_lines
+   - name: get timestamp
+     command: date +%Y%m%d
+     register: timestamp
+   - name: copy runinng config to folder
+     copy:
+      content: "{{ print.stdout[0] }}"
+      dest: "/etc/ansible/configbak/{{ ansible_net_hostname }}_{{ timestamp.stdout }}.txt"

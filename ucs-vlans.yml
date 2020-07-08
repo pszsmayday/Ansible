@@ -1,0 +1,23 @@
+- name: Creat UCSM vlan
+  hosts: UCSM
+  gather_facts: true
+  connection: local
+
+  tasks:
+    - name: Configure Vlan on Fabric A
+      ucs_vlans:
+       hostname: 10.124.113.4
+       username: admin
+       password: 1m0reTime
+       fabric: A
+       name: test-ansible
+       id: '400'
+    - name: Configure Vlan on Fabric B
+      ucs_vlans:
+       hostname: 10.124.113.4
+       username: admin
+       password: 1m0reTime
+       fabric: B
+       name: test-ansible
+       id: '400'
+
